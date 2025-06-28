@@ -27,10 +27,10 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import LinearProgress from '@mui/material/LinearProgress';
 import HelpIcon from '@mui/icons-material/Help';
 
-// localhost url
-axios.defaults.baseURL = "http://localhost:8000"; 
+// prod url
+axios.defaults.baseURL = "http://markovlyrics.com/"; 
 
-// axios.defaults.baseURL = "http://34.227.157.72:8000/";
+// axios.defaults.baseURL = "http://localhost:8000/";
 // sets up the material ui theme for the app
 const theme = createTheme({
   palette: {
