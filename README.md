@@ -1,6 +1,6 @@
 # Markov Lyrics Documentation
 ## Explanation
-Markov Lyrics is a text generator dedicated to generating song lyrics based on a corpus of text that uses Markov chains. It is a dynamic single page application hosted on an AWS EC2 instance via Nginx and Gunicorn at http://34.227.157.72/. It was creating using a React/JavaScript front end, and a Flask/Python backend. 
+Markov Lyrics is a text generator dedicated to generating song lyrics based on a corpus of text that uses Markov chains. It was creating using a React/JavaScript front end, and a Flask/Python backend. 
 
 ## Frontend
 The frontend consists of one file: `App.js`, and uses React in combination with Material UI. `App.js` is a functional component that houses all of the frontend JSX and all code responsible for making requests to the backend. The frontend has 4 functions responsible for making axios requests to the backend and updating its state accordingly:
