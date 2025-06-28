@@ -27,6 +27,7 @@ backend/__pycache__
 backend/env/__pycache__
 backend/env/Include
 backend/env/Lib
-backend/env/Scripts
-flask_react/build
-flask_react/node_modules
+backend/env/Script
+backend/venv
+frontend/build
+frontend/node_modules
