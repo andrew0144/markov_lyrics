@@ -23,12 +23,14 @@ import {
 } from "@mui/material";
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from "@emotion/react";
-import TextareaAutosize from '@mui/base/TextareaAutosize';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 import LinearProgress from '@mui/material/LinearProgress';
 import HelpIcon from '@mui/icons-material/Help';
 
-axios.defaults.baseURL = "http://34.227.157.72:8000/";
+// localhost url
+axios.defaults.baseURL = "http://localhost:8000"; 
 
+// axios.defaults.baseURL = "http://34.227.157.72:8000/";
 // sets up the material ui theme for the app
 const theme = createTheme({
   palette: {
@@ -247,8 +249,7 @@ function App() {
       <ThemeProvider theme={theme}>
       <header className="App-header">
         <h1>Markov Chain Song Lyric Generator</h1>
-      </header>
-      <FormControl>
+              <FormControl>
         <Autocomplete
           id="autocomplete-checkboxes"
           sx={{ width: 675, marginBottom: 2}}
@@ -394,6 +395,8 @@ function App() {
           </Box>
         </Fade>
       </Modal>
+      </header>
+
       </ThemeProvider>
     </div>
   );

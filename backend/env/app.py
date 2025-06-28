@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 import json
 import markovify
 from lyricsgenius import Genius
@@ -18,6 +19,7 @@ genius_lyrics = ''
 
 # the generate endpoint for my api, runs when the user hits the "Generate Lyrics" button on the frontend 
 api = Flask(__name__)
+CORS(api)
 @api.route('/generate')
 def my_generation():
     print("USER TEXT: \n" + request.args['user_text'])
