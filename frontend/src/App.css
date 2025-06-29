@@ -13,7 +13,20 @@
   }
 }
 
-.App-header {
+.form-control {
+  width: 400px;
+}
+
+.form-control-long {
+  width: 832px;
+}
+
+h1 {
+  padding-right: 2rem;
+  padding-left: 2rem;
+}
+
+.App-div {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -34,5 +47,11 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media only screen and (max-width: 920px) {
+  .form-control, .form-control-long {
+    width: 80vw;
   }
 }

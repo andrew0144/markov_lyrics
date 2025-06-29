@@ -24,10 +24,7 @@ yarn-error.log*
 
 # backend
 backend/__pycache__
-backend/env/__pycache__
-backend/env/Include
-backend/env/Lib
-backend/env/Script
+backend/env
 backend/venv
 frontend/build
 frontend/node_modules
