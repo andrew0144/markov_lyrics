@@ -30,9 +30,9 @@ import LinearProgress from "@mui/material/LinearProgress";
 import HelpIcon from "@mui/icons-material/Help";
 
 // prod url
-// axios.defaults.baseURL = "https://markovlyrics.com/";
+axios.defaults.baseURL = "https://markovlyrics.com/";
 
-axios.defaults.baseURL = "http://localhost:8000/";
+//axios.defaults.baseURL = "http://localhost:8000/";
 // sets up the material ui theme for the app
 const theme = createTheme({
 	palette: {

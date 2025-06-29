@@ -31,12 +31,17 @@ def serve_static(filename):
 
 @api.route('/favicon.ico')
 def favicon():
-    return send_from_directory(api.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(api.template_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+# Explicit route for manifest.json
+@api.route('/logo192.png')
+def logo():
+    return send_from_directory(api.template_folder, 'logo192.png', mimetype='image/png')
 
 # Explicit route for manifest.json
 @api.route('/manifest.json')
 def manifest():
-    return send_from_directory(app.static_folder, 'manifest.json', mimetype='application/manifest+json')
+    return send_from_directory(api.template_folder, 'manifest.json', mimetype='application/manifest+json')
 
 @api.route('/generate')
 def my_generation():
