@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template, send_from_directory
 from flask_cors import CORS
 import json
 import markovify
@@ -18,12 +18,25 @@ genius_sources=[]
 genius_lyrics = ''
 
 # the generate endpoint for my api, runs when the user hits the "Generate Lyrics" button on the frontend 
-api = Flask(__name__)
+api = Flask(__name__, static_folder="../frontend/build/static", template_folder="../frontend/build")
 CORS(api)
 
-@api.route("/")
-def hello():
-    return "Hello, World!"
+@api.route('/')
+def home():
+    return render_template("index.html");
+
+@api.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(app.static_folder, filename)
+
+@api.route('/favicon.ico')
+def favicon():
+    return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+# Explicit route for manifest.json
+@api.route('/manifest.json')
+def manifest():
+    return send_from_directory(app.static_folder, 'manifest.json', mimetype='application/manifest+json')
 
 @api.route('/generate')
 def my_generation():
