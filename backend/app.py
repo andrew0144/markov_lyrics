@@ -27,11 +27,11 @@ def home():
 
 @api.route('/static/<path:filename>')
 def serve_static(filename):
-    return send_from_directory(app.static_folder, filename)
+    return send_from_directory(api.static_folder, filename)
 
 @api.route('/favicon.ico')
 def favicon():
-    return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(api.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 # Explicit route for manifest.json
 @api.route('/manifest.json')
