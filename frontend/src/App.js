@@ -14,7 +14,6 @@ import {
 	Snackbar,
 	Alert,
 	Container,
-	Fab,
 	Box,
 	Fade,
 	Backdrop,
@@ -116,15 +115,6 @@ function App() {
 		"rihanna",
 	];
 
-	const fabStyle = {
-		margin: 0,
-		top: "auto",
-		right: 10,
-		bottom: 10,
-		left: "auto",
-		position: "fixed",
-	};
-
 	const modalStyle = {
 		position: "absolute",
 		top: "50%",
@@ -211,6 +201,7 @@ function App() {
 		setChecked([]);
 		setText("");
 		setArtistName("");
+    setSongName("");
 
 		axios({
 			method: "GET",
@@ -348,9 +339,10 @@ function App() {
 							minRows={3}
 							maxRows={8}
 							placeholder="Enter your text here.."
-							style={{ my: 2, padding: 2, backgroundColor: "#282c34", color: "rgba(255, 255, 255, 0.7)", width: "100%", borderRadius: 4, fontSize: 16 }}
+							style={{ my: 2, padding: 2, backgroundColor: "#282c34", color: "rgba(255, 255, 255, 0.7)", borderRadius: 4, fontSize: 16 }}
 							onChange={(event) => setText(event.target.value)}
               spellCheck="false"
+              className="user-text-input"
 						/>
 					</FormControl>
 

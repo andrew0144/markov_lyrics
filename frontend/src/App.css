@@ -13,6 +13,25 @@
   }
 }
 
+.user-text-input:focus {
+  border-color: #7986cb !important;
+  outline: 1px solid #7986cb !important;
+}
+
+.user-text-input {
+  color: #7986cb !important;
+  transition: border-color 0.3s, outline 0.3s;
+}
+
+.user-text-input:hover {
+  border-color: #7986cb !important;
+  outline: 1px solid #7986cb !important;
+}
+
+.user-text-input:focus::placeholder {
+  color: #7986cb !important;
+  opacity: 0.5;
+}
 
 .form-control {
   width: 650px;
