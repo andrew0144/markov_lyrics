@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import "./App.css";
-import * as React from "react";
 import {
 	Button,
 	FormControl,
@@ -20,8 +19,6 @@ import {
 	Fade,
 	Backdrop,
 	Modal,
-  Paper,
-  Grid,
 } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@emotion/react";
@@ -32,7 +29,7 @@ import HelpIcon from "@mui/icons-material/Help";
 // prod url
 axios.defaults.baseURL = "https://markovlyrics.com/";
 
-//axios.defaults.baseURL = "http://localhost:8000/";
+// axios.defaults.baseURL = "http://localhost:8000/";
 // sets up the material ui theme for the app
 const theme = createTheme({
 	palette: {
@@ -48,7 +45,9 @@ const theme = createTheme({
 		},
 	},
 	typography: {
-		fontFamily: "Montserrat",
+		fontFamily: `'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif`,
 		fontSize: 17,
 	},
 });
@@ -60,8 +59,8 @@ function App() {
 	const [checked, setChecked] = useState([]);
 	const [text, setText] = useState("");
 	const [artistName, setArtistName] = useState("");
-	const [isSearchingArtist, setIsSearchingArtist] = useState(false);
-	const [albumName, setAlbumName] = useState("");
+	const [isSearchingSong, setIsSearchingSong] = useState(false);
+	const [songName, setSongName] = useState("");
 	const [isSearchingAlbum, setIsSearchingAlbum] = useState(false);
 	const [successOpen, setSuccessOpen] = useState(false);
 	const [errorOpen, setErrorOpen] = useState(false);
@@ -130,7 +129,8 @@ function App() {
 		top: "50%",
 		left: "50%",
 		transform: "translate(-50%, -50%)",
-		width: "50%",
+		width: "80%",
+		maxWidth: "900px",
 		border: "2px solid white",
 		backgroundColor: "#7986cb",
 		borderRadius: "10px",
@@ -165,59 +165,42 @@ function App() {
 			});
 	}
 
-	// loads the lyrics for the artist to the backend using an axios request
-	function loadArtistLyrics() {
-		setIsSearchingArtist(true);
-		axios({
-			method: "GET",
-			url: "/loadartist",
-			params: {
-				artistName: artistName,
-			},
-		})
-			.then((response) => {
-				setSuccessOpen(true);
-				setIsSearchingArtist(false);
-				const res = response.data;
-				console.log(res);
-			})
-			.catch((error) => {
-				if (error.response) {
-					setErrorOpen(true);
-					setIsSearchingArtist(false);
-					console.log(error.response);
-					console.log(error.response.status);
-					console.log(error.response.headers);
-				}
-			});
-	}
-
-	// loads the lyrics for the album to the backend using an axios request
-	function loadAlbumLyrics() {
+	// loads the lyrics for a song using an axios request
+	async function loadSongLyrics() {
 		console.log(length);
-		setIsSearchingAlbum(true);
-		axios({
-			method: "GET",
-			url: "/loadalbum",
-			params: {
-				albumName: albumName,
-			},
-		})
-			.then((response) => {
-				setSuccessOpenAlbum(true);
-				setIsSearchingAlbum(false);
-				const res = response.data;
-				console.log(res);
-			})
-			.catch((error) => {
-				if (error.response) {
-					setErrorOpenAlbum(true);
-					setIsSearchingAlbum(false);
-					console.log(error.response);
-					console.log(error.response.status);
-					console.log(error.response.headers);
-				}
+		setIsSearchingSong(true);
+		try {
+			const lyrics_response = await axios({
+				method: "GET",
+				url: `/${artistName}/${songName}`,
+				baseURL: "https://api.lyrics.ovh/v1",
 			});
+			console.log(lyrics_response);
+			const lyrics = lyrics_response.data.lyrics;
+			console.log(lyrics);
+			if (!lyrics) {
+				throw new Error("Lyrics not found");
+			}
+			const response = await axios({
+				method: "GET",
+				url: "/loadlyrics",
+				params: {
+					lyrics: lyrics,
+					artistName: artistName,
+				},
+			});
+			const res = response.data;
+			if (res.error) {
+				throw new Error(res.error);
+			}
+			console.log(res);
+			setSuccessOpen(true);
+			setIsSearchingSong(false);
+		} catch (error) {
+			setErrorOpen(true);
+			setIsSearchingSong(false);
+			console.log(error);
+		}
 	}
 
 	function reset() {
@@ -250,62 +233,61 @@ function App() {
 			<ThemeProvider theme={theme}>
 				<div className="App-div">
 					<h1>Markov Chain Song Lyric Generator</h1>
-          <Container sx={{ maxWidth: "100%" }}>
-            <FormControl className="form-control" sx={{ m: 2 }}>
-            <Autocomplete
-              id="autocomplete-checkboxes"
-              value={checked}
-              multiple
-							options={artists}
-							getOptionLabel={(option) => option}
-							onChange={(event, newValue) => {
-								setChecked(newValue);
-							}}
-							renderInput={(params) => (
-								<TextField
-									sx={{ paddingTop: 0.5 }}
-									{...params}
-									variant="standard"
-									label="Artists Selected"
-									placeholder="Choose Artists.."
-								/>
-							)}
-						/>
-					  </FormControl>
-
-            <FormControl className="form-control" sx={{ m: 2 }}>
-            <FormLabel
-              sx={{ textAlign: "left" }}
-              id="demo-radio-buttons-group-label"
-            >
-              Length
-            </FormLabel>
-            <RadioGroup
-              row
-              value={length}
-              onChange={(event) => setLength(event.target.value)}
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="one-line"
-              name="radio-buttons-group"
-            >
-              <FormControlLabel
-                value="one-line"
-                control={<Radio />}
-                label="One Liner"
-              />
-              <FormControlLabel
-                value="verse"
-                control={<Radio />}
-                label="Verse"
-              />
-              <FormControlLabel
-                value="song"
-                control={<Radio />}
-                label="Full Song"
-              />
-            </RadioGroup>
-            </FormControl>
-          </Container>
+					<FormControl className="form-control" sx={{ mt: 2 }}>
+						<FormLabel
+							sx={{ textAlign: "left" }}
+							id="demo-radio-buttons-group-label"
+						>
+							Length
+						</FormLabel>
+						<RadioGroup
+							row
+							value={length}
+							onChange={(event) => setLength(event.target.value)}
+							aria-labelledby="demo-radio-buttons-group-label"
+							defaultValue="one-line"
+							name="radio-buttons-group"
+						>
+							<FormControlLabel
+								value="one-line"
+								control={<Radio />}
+								label="One Liner"
+							/>
+							<FormControlLabel
+								value="verse"
+								control={<Radio />}
+								label="Verse"
+							/>
+							<FormControlLabel
+								value="song"
+								control={<Radio />}
+								label="Full Song"
+							/>
+						</RadioGroup>
+					</FormControl>
+					<Container sx={{ maxWidth: "100%" }}>
+						<FormControl className="form-control" sx={{ mb: 2 }}>
+							<Autocomplete
+								id="autocomplete-checkboxes"
+								value={checked}
+								multiple
+								options={artists}
+								getOptionLabel={(option) => option}
+								onChange={(event, newValue) => {
+									setChecked(newValue);
+								}}
+								renderInput={(params) => (
+									<TextField
+										sx={{ paddingTop: 0.5 }}
+										{...params}
+										variant="standard"
+										label="Artists Selected"
+										placeholder="Choose Artists.."
+									/>
+								)}
+							/>
+						</FormControl>
+					</Container>
 
 					<Container sx={{ maxWidth: "100%" }}>
 						<FormControl className="form-control" sx={{ mx: 2 }}>
@@ -313,54 +295,48 @@ function App() {
 								sx={{ mb: 1, textAlign: "left" }}
 								id="demo-radio-buttons-group-label"
 							>
-								Load Artist's Top 20 songs From Genius
+								Load Song's Lyrics
 							</FormLabel>
-							<TextField
-								value={artistName}
-								id="outlined-basic"
-								label="Artist Name"
-								variant="outlined"
-								placeholder="Enter Artist's Name"
-								onChange={(event) => setArtistName(event.target.value)}
-							/>
-							<Button
-								sx={{ my: 2 }}
-								variant="contained"
-								onClick={loadArtistLyrics}
+							<Container
+								sx={{
+									display: "flex",
+									padding: "0px !important",
+									gap: 2,
+									justifyContent: "space-between",
+								}}
 							>
-								Load Artist's Lyrics
-							</Button>
-							{isSearchingArtist && <LinearProgress />}
-						</FormControl>
+								<TextField
+									value={artistName}
+									id="outlined-basic"
+									label="Artist Name"
+									variant="outlined"
+									placeholder="Enter Artist's Name"
+									onChange={(event) => setArtistName(event.target.value)}
+									sx={{ flexGrow: 1, mb: 2 }}
+								/>
+								<TextField
+									value={songName}
+									id="outlined-basic"
+									label="Song Name"
+									variant="outlined"
+									placeholder="Enter Song Name"
+									onChange={(event) => setSongName(event.target.value)}
+									sx={{ flexGrow: 1, mb: 2 }}
+								/>
+							</Container>
 
-						<FormControl className="form-control" sx={{ mx: 2 }}>
-							<FormLabel
-								sx={{ mb: 1, textAlign: "left" }}
-								id="demo-radio-buttons-group-label"
-							>
-								Load Album's Lyrics From Genius
-							</FormLabel>
-							<TextField
-								value={albumName}
-								id="outlined-basic"
-								label="Album Name"
-								variant="outlined"
-								placeholder="Enter a Search Term for an Album.."
-								onChange={(event) => setAlbumName(event.target.value)}
-							/>
 							<Button
-								sx={{ my: 2 }}
+								sx={{ mb: 2 }}
 								variant="contained"
-								onClick={loadAlbumLyrics}
+								onClick={loadSongLyrics}
 							>
-								Load Album's Lyrics
+								Load Song's Lyrics
 							</Button>
-							{isSearchingAlbum && <LinearProgress />}
+							{isSearchingSong && <LinearProgress />}
 						</FormControl>
-
 					</Container>
 
-					<FormControl className="form-control-long">
+					<FormControl className="form-control">
 						<FormLabel sx={{ mb: 1, textAlign: "left" }} id="user-text-label">
 							User Text
 						</FormLabel>
@@ -376,15 +352,31 @@ function App() {
 					</FormControl>
 
 					<Container>
-						<Button sx={{ m: 2 }} variant="contained" onClick={generateLyrics}>
-							Generate Song Lyric
-						</Button>
-						<Button sx={{ m: 2 }} variant="contained" onClick={reset}>
-							Reset
-						</Button>
+						<FormControl
+							className="form-control"
+							sx={{ my: 2, flexDirection: "row", gap: 2 }}
+						>
+							<Button
+								sx={{ my: 2, width: "50%" }}
+								variant="contained"
+								onClick={generateLyrics}
+							>
+								Generate Song Lyric
+							</Button>
+							<Button
+								sx={{ my: 2, width: "50%" }}
+								variant="contained"
+								onClick={reset}
+							>
+								Reset
+							</Button>
+						</FormControl>
 					</Container>
 
-					<Typography sx={{ justifyContent: "center" }} className="form-control-long">
+					<Typography
+						sx={{ justifyContent: "center" }}
+						className="form-control"
+					>
 						{songLyric && (
 							<div>
 								<Typography
@@ -414,7 +406,6 @@ function App() {
 						<HelpIcon />
 					</Fab>
 
-
 					<Snackbar
 						open={successOpen}
 						autoHideDuration={6000}
@@ -425,7 +416,7 @@ function App() {
 							severity="success"
 							sx={{ width: "100%" }}
 						>
-							Loaded Lyrics From the Top 20 Songs by {artistName}
+							Successfuly loaded lyrics from {songName} by {artistName}.
 						</Alert>
 					</Snackbar>
 
@@ -439,36 +430,7 @@ function App() {
 							severity="error"
 							sx={{ width: "100%" }}
 						>
-							Failed to Load {artistName}'s Lyrics. Please try again or check
-							spelling.
-						</Alert>
-					</Snackbar>
-
-					<Snackbar
-						open={successOpenAlbum}
-						autoHideDuration={6000}
-						onClose={() => setSuccessOpenAlbum(false)}
-					>
-						<Alert
-							onClose={() => setSuccessOpenAlbum(false)}
-							severity="success"
-							sx={{ width: "100%" }}
-						>
-							Loaded Lyrics From the Album "{albumName}".
-						</Alert>
-					</Snackbar>
-
-					<Snackbar
-						open={errorOpenAlbum}
-						autoHideDuration={6000}
-						onClose={() => setErrorOpenAlbum(false)}
-					>
-						<Alert
-							onClose={() => setErrorOpenAlbum(false)}
-							severity="error"
-							sx={{ width: "100%" }}
-						>
-							Failed to Load Lyrics from the Album "{albumName}"". Please try
+							Failed to load lyrics for {songName} by {artistName}. Please try
 							again or check spelling.
 						</Alert>
 					</Snackbar>
@@ -478,6 +440,7 @@ function App() {
 						aria-describedby="transition-modal-description"
 						open={modalOpen}
 						onClose={() => setModalOpen(false)}
+            onClick={() => setModalOpen(false)}
 						closeAfterTransition
 						slots={{ backdrop: Backdrop }}
 						slotProps={{
@@ -504,14 +467,13 @@ function App() {
 									their songs.
 									<br></br>
 									<br></br>
-									If you don't see your favorite artist, type their name in the
-									"Load Artist's Top 20 Songs From Genius" field and click the
-									"Get Artist's Lyrics" button, and the app will use the lyrics
-									from their top 20 songs." You can also get the lyrics for an
-									album by typing in the "Album Name" field, and clicking the
-									"Get Album's Lyrics" button. These options may include
-									undesired text in the output, since they scrape the lyrics
-									from the Genius website.
+									If you don't see your favorite song, you can load it by typing
+									in the "Artist Name" and "Song Name" fields and clicking the
+									"Get Song's Lyrics" button, and the app will use the lyrics
+									from that song. The app will then generate lyrics based on
+									that song's lyrics. For example, try typing in "Otis Redding"
+									as the Artist Name and "Dock of the Bay" as the Song Name to
+									see the generated lyrics.
 									<br></br>
 									<br></br>For extra customization, you can enter your own text
 									into the "User Text" field, and the app will generate lyrics
@@ -519,7 +481,7 @@ function App() {
 									<br></br>
 									<br></br>Lastly, you can select the length of the generated
 									output. To clear all inputs and unload any lyrics loaded from
-									Genius, hit the "Reset" button."
+									songs, hit the "Reset" button."
 								</Typography>
 							</Box>
 						</Fade>
