@@ -348,8 +348,9 @@ function App() {
 							minRows={3}
 							maxRows={8}
 							placeholder="Enter your text here.."
-							style={{ my: 2, padding: 2 }}
+							style={{ my: 2, padding: 2, backgroundColor: "#282c34", color: "rgba(255, 255, 255, 0.7)", width: "100%", borderRadius: 4, fontSize: 16 }}
 							onChange={(event) => setText(event.target.value)}
+              spellCheck="false"
 						/>
 					</FormControl>
 
