@@ -61,11 +61,8 @@ function App() {
 	const [artistName, setArtistName] = useState("");
 	const [isSearchingSong, setIsSearchingSong] = useState(false);
 	const [songName, setSongName] = useState("");
-	const [isSearchingAlbum, setIsSearchingAlbum] = useState(false);
 	const [successOpen, setSuccessOpen] = useState(false);
 	const [errorOpen, setErrorOpen] = useState(false);
-	const [successOpenAlbum, setSuccessOpenAlbum] = useState(false);
-	const [errorOpenAlbum, setErrorOpenAlbum] = useState(false);
 	const [modalOpen, setModalOpen] = useState(false);
 	const artists = [
 		"adele",
