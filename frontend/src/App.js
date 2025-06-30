@@ -20,7 +20,7 @@ import {
 	Backdrop,
 	Modal,
 } from "@mui/material";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import { ThemeProvider } from "@emotion/react";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -31,7 +31,7 @@ axios.defaults.baseURL = "https://markovlyrics.com/";
 
 // axios.defaults.baseURL = "http://localhost:8000/";
 // sets up the material ui theme for the app
-const theme = createTheme({
+const theme = responsiveFontSizes(createTheme({
 	palette: {
 		mode: "dark",
 		primary: {
@@ -50,7 +50,7 @@ const theme = createTheme({
     sans-serif`,
 		fontSize: 17,
 	},
-});
+}));
 
 function App() {
 	// some state hook setup
@@ -128,6 +128,7 @@ function App() {
 		transform: "translate(-50%, -50%)",
 		width: "80%",
 		maxWidth: "900px",
+    maxHeight: '80vh',
 		border: "2px solid white",
 		backgroundColor: "#7986cb",
 		borderRadius: "10px",
@@ -455,9 +456,10 @@ function App() {
 								>
 									About this App
 								</Typography>
-								<Typography id="transition-modal-description" sx={{ mt: 2 }}>
+								<Typography id="transition-modal-description" sx={{ mt: 2 }} className="modal-box">
 									This app uses Markov Chains to generate song lyrics from a
-									corpus of text.<br></br>
+									corpus of text.
+                  <br></br>
 									<br></br>
 									You can select any number of artists from the database, and
 									the app will generate lyrics based on the text from all of

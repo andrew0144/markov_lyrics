@@ -13,6 +13,7 @@
   }
 }
 
+
 .form-control {
   width: 650px;
 }
@@ -48,5 +49,10 @@ h1 {
 @media only screen and (max-width: 920px) {
   .form-control, .form-control-long {
     width: 80vw;
+  }
+
+  .modal-box {
+    font-size: 2vh !important;
+    height: 80vh;
   }
 }
