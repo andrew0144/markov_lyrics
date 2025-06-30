@@ -19,38 +19,42 @@ import {
 	Fade,
 	Backdrop,
 	Modal,
+	Card,
 } from "@mui/material";
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import { ThemeProvider } from "@emotion/react";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import LinearProgress from "@mui/material/LinearProgress";
 import HelpIcon from "@mui/icons-material/Help";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 // prod url
 axios.defaults.baseURL = "https://markovlyrics.com/";
 
 // axios.defaults.baseURL = "http://localhost:8000/";
 // sets up the material ui theme for the app
-const theme = responsiveFontSizes(createTheme({
-	palette: {
-		mode: "dark",
-		primary: {
-			main: "#7986cb",
+const theme = responsiveFontSizes(
+	createTheme({
+		palette: {
+			mode: "dark",
+			primary: {
+				main: "#7986cb",
+			},
+			secondary: {
+				main: "#f50057",
+			},
+			text: {
+				primary: "#7986cb",
+			},
 		},
-		secondary: {
-			main: "#f50057",
-		},
-		text: {
-			primary: "#7986cb",
-		},
-	},
-	typography: {
-		fontFamily: `'Roboto', 'Oxygen',
+		typography: {
+			fontFamily: `'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif`,
-		fontSize: 17,
-	},
-}));
+			fontSize: 17,
+		},
+	})
+);
 
 function App() {
 	// some state hook setup
@@ -115,8 +119,8 @@ function App() {
 	const fabStyle = {
 		margin: 0,
 		top: "auto",
-		right: 20,
-		bottom: 20,
+		right: 10,
+		bottom: 10,
 		left: "auto",
 		position: "fixed",
 	};
@@ -128,7 +132,7 @@ function App() {
 		transform: "translate(-50%, -50%)",
 		width: "80%",
 		maxWidth: "900px",
-    maxHeight: '80vh',
+		maxHeight: "80vh",
 		border: "2px solid white",
 		backgroundColor: "#7986cb",
 		borderRadius: "10px",
@@ -361,48 +365,76 @@ function App() {
 							>
 								Generate Song Lyric
 							</Button>
-							<Button
-								sx={{ my: 2, width: "50%" }}
-								variant="contained"
-								onClick={reset}
-							>
-								Reset
-							</Button>
+							<div style={{ width: "50%", display: "flex", gap: 16 }}>
+								<Button
+									sx={{ my: 2, flexGrow: 1 }}
+									variant="contained"
+									onClick={reset}
+								>
+									<CancelIcon />
+								</Button>
+								<Button
+									sx={{ my: 2, flexGrow: 1 }}
+									variant="contained"
+									aria-label="add"
+									onClick={() => setModalOpen(true)}
+									className="help-button"
+								>
+									<HelpIcon />
+								</Button>
+							</div>
 						</FormControl>
 					</Container>
 
-					<Typography
-						sx={{ justifyContent: "center" }}
-						className="form-control"
+					<Card
+						sx={{
+							padding: "16px 0",
+							marginBottom: 2,
+						}}
 					>
-						{songLyric && (
-							<div>
-								<Typography
-									sx={{
-										fontSize: 25,
-										marginBottom: -2,
-										fontWeight: "bold",
-										textDecoration: "underline",
-									}}
-								>
-									{songLyric.artists && (
-										<span>Generated Song Lyric using {songLyric.artists}</span>
-									)}
-								</Typography>
-								<br></br>
-								{songLyric.text}
-							</div>
-						)}
-					</Typography>
-
-					<Fab
-						style={fabStyle}
-						color="primary"
-						aria-label="add"
-						onClick={() => setModalOpen(true)}
-					>
-						<HelpIcon />
-					</Fab>
+						<Typography
+							sx={{ justifyContent: "center" }}
+							className="form-control"
+						>
+							{songLyric ? (
+								<div>
+									<Typography
+										sx={{
+											fontSize: 25,
+											marginBottom: -2,
+											fontWeight: "bold",
+											textDecoration: "underline",
+										}}
+									>
+										{songLyric.artists && (
+											<span>
+												Generated Song Lyric using {songLyric.artists}
+											</span>
+										)}
+									</Typography>
+									<br></br>
+									{songLyric.text}
+								</div>
+							) : (
+								<div>
+                  <Typography
+										sx={{
+											fontSize: 25,
+											marginBottom: -2,
+											fontWeight: "bold",
+											textDecoration: "underline",
+										}}
+									>
+											<span>
+												Generated Song Lyric:
+											</span>
+									</Typography>
+									<br></br>
+									No lyrics generated yet.
+								</div>
+							)}
+						</Typography>
+					</Card>
 
 					<Snackbar
 						open={successOpen}
@@ -438,7 +470,7 @@ function App() {
 						aria-describedby="transition-modal-description"
 						open={modalOpen}
 						onClose={() => setModalOpen(false)}
-            onClick={() => setModalOpen(false)}
+						onClick={() => setModalOpen(false)}
 						closeAfterTransition
 						slots={{ backdrop: Backdrop }}
 						slotProps={{
@@ -456,10 +488,14 @@ function App() {
 								>
 									About this App
 								</Typography>
-								<Typography id="transition-modal-description" sx={{ mt: 2 }} className="modal-box">
+								<Typography
+									id="transition-modal-description"
+									sx={{ mt: 2 }}
+									className="modal-box"
+								>
 									This app uses Markov Chains to generate song lyrics from a
 									corpus of text.
-                  <br></br>
+									<br></br>
 									<br></br>
 									You can select any number of artists from the database, and
 									the app will generate lyrics based on the text from all of

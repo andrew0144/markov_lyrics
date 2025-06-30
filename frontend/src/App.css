@@ -52,7 +52,11 @@ h1 {
   }
 
   .modal-box {
-    font-size: 2vh !important;
+    font-size: 1.9vh !important;
     height: 80vh;
+  }
+
+  .help-button {
+    .display: none !important;
   }
 }
